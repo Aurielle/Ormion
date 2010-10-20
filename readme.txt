@@ -9,4 +9,4 @@ Jednoduché active record ORM pro Nette a dibi
 
 -----------------
 
-Používání Ormionu je jen na vlastní nebezpečí. Zkuste Doctrine 2.
+Větev aktualizovaná (zatím pouze bugfixy)
