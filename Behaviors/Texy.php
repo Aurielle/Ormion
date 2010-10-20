@@ -11,7 +11,7 @@ use Ormion\IRecord;
  * @author Jan Marek
  * @license MIT
  */
-class Texy extends Nette\Object implements IBehavior
+class Texy extends \Nette\Object implements IBehavior
 {
 	/** @var array */
 	private static $texyObjects;

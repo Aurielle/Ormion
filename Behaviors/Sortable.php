@@ -9,7 +9,7 @@ use Ormion\IRecord;
  *
  * @author Jan Marek
  */
-class Sortable extends Nette\Object implements IBehavior
+class Sortable extends \Nette\Object implements IBehavior
 {
 	/** @var string */
 	private $orderColumn;

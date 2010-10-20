@@ -10,7 +10,7 @@ use Ormion\IRecord;
  * @author Jan Marek
  * @license MIT
  */
-class Hashable extends Nette\Object implements IBehavior
+class Hashable extends \Nette\Object implements IBehavior
 {
 
 	/** @var string */
