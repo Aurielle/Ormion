@@ -163,7 +163,7 @@ class Mapper extends \Nette\Object implements IMapper
 	 */
 	protected function createFindFluent()
 	{
-		return $this->getDb()->select("*")->from($this->table);
+		return $this->getDb()->select("$this->table.*")->from($this->table);
 	}
 
 
