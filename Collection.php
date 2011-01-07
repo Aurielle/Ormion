@@ -18,6 +18,9 @@ class Collection extends BaseCollection implements \IDataSource
 	/** @var bool */
 	private $loaded = false;
 
+	/** @var callable|null */
+	private $countCallback = NULL;
+
 
 
 	/**
@@ -29,6 +32,13 @@ class Collection extends BaseCollection implements \IDataSource
 	{
 		parent::__construct($rowClass);
 		$this->fluent = $fluent;
+
+		$this->countCallback = function($collection) {
+			$fluent = clone $collection->toFluent();
+			$fluent->removeClause("select")->select('COUNT(*) AS [count]');
+
+			return $fluent;
+		};
 	}
 
 
@@ -113,6 +123,12 @@ class Collection extends BaseCollection implements \IDataSource
 	 */
 	public function count()
 	{
+		if($this->countCallback)
+		{
+			$fluent = call_user_func($this->countCallback, $this);
+			return $this->runQuery($fluent)->fetchSingle();
+		}
+
 		return $this->loaded ? parent::count() : $this->fluent->count();
 	}
 
@@ -330,6 +346,34 @@ class Collection extends BaseCollection implements \IDataSource
 	public function getSum($column)
 	{
 		return $this->getAggr("sum", $column);
+	}
+
+
+
+	/**
+	 * Set callback for counting
+	 * @param FALSE|array|Callback|callable $callback
+	 * @return Collection provides a fluent interface
+	 */
+	public function setCountCallback($callback = NULL)
+	{
+		if(!is_callable($callback))
+			if($callback !== NULL)
+				throw new \InvalidArgumentException("Provided callback function '$callback' is not a valid callback.");
+
+		$this->countCallback = $callback;
+		return $this;
+	}
+
+
+
+	/**
+	 * Get callback for counting
+	 * @return mixed
+	 */
+	public function getCountCallback()
+	{
+		return $this->countCallback;
 	}
 
 }
