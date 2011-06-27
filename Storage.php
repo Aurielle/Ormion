@@ -359,7 +359,11 @@ class Storage extends \Nette\FreezableObject implements \ArrayAccess, \IteratorA
 	 */
 	public function __isset($name)
 	{
-		return isset($this->values[$this->fixName($name)]);
+		// Isset is causing problems with NULL values,
+		// I don't understand why it was used anyway...
+		// return isset($this->values[$this->fixName($name)]);
+
+		return $this->hasValue($name);
 	}
 
 
