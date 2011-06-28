@@ -307,7 +307,7 @@ class Storage extends \Nette\FreezableObject implements \ArrayAccess, \IteratorA
 			if (array_key_exists($name, $this->values)) {
 				$ret = $this->values[$name];
 			} else {
-				throw new \MemberAccessException("Value '$name' was not set.");
+				throw new \Nette\MemberAccessException("Value '$name' was not set.");
 			}
 		}
 

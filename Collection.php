@@ -128,7 +128,7 @@ class Collection extends BaseCollection implements \IDataSource
 			$fluent = call_user_func($this->countCallback, $this);
 			return $this->runQuery($fluent)->fetchSingle();
 		}
-
+		
 		return $this->loaded ? parent::count() : $this->fluent->count();
 	}
 

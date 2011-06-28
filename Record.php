@@ -114,7 +114,7 @@ abstract class Record extends Storage implements IRecord
 		} elseif (static::getReflection()->getAnnotation("table") != null) {
 			$table = static::getReflection()->getAnnotation("table");
 		} else {
-			throw new \InvalidStateException("Table name is not set.");
+			throw new \Nette\InvalidStateException("Table name is not set.");
 		}
 
 		$cls = static::$mapperClass;

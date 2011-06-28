@@ -2,7 +2,7 @@
 
 namespace Ormion;
 
-use Nette\Environment, Nette\Reflection\ClassReflection;
+use Nette\Environment, Nette\Reflection\ClassType;
 use dibi;
 use Ormion\Association\IAssociation;
 
@@ -117,7 +117,7 @@ class Mapper extends \Nette\Object implements IMapper
 	 */
 	protected function loadAssociations()
 	{
-		$annotations = ClassReflection::from($this->rowClass)->getAnnotations();
+		$annotations = ClassType::from($this->rowClass)->getAnnotations();
 
 		foreach ($annotations as $k => $v) {
 			if ($v[0] instanceof \Ormion\Association\IAssociation) {

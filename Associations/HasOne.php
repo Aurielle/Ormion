@@ -29,7 +29,7 @@ class HasOneAnnotation extends Ormion\Association\BaseAssociation
 	public function setReferenced(IRecord $record, $data)
 	{
 		if ($data->getState() == IRecord::STATE_NEW) {
-			throw new \NotImplementedException;
+			throw new \Nette\NotImplementedException;
 		}
 
 		$record[$this->column] = $data->getPrimary();
