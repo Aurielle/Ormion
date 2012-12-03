@@ -308,14 +308,15 @@ class Mapper extends \Nette\Object implements IMapper
 			$config = $this->getConfig();
 			$columns = array_intersect($config->getColumns(), $record->getModified());
 
+                        $primaryKeys = $config->getPrimaryColumns();
 			foreach ($columns as $column) {
+                                if ( !in_array($column,$primaryKeys)) 
 				$values[$column . "%" . $config->getType($column)] = $record->$column;
 			}
-
 			if (isset($values)) {
 				$this->getDb()
 					->update($this->table, $values)
-					->where($record->getValues($config->getPrimaryColumns()))
+					->where($record->getValues($primaryKeys))
 					->execute();
 
 				$record->clearModified();
