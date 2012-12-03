@@ -189,7 +189,13 @@ class Mapper extends \Nette\Object implements IMapper
 	 */
 	public function find($conditions = null)
 	{
-		$fluent = $this->createFindFluent();
+		
+                if (in_array(strtolower($this->getDb()->getConfig("driver")), array("mssql","mssql2005","sqlsrv")) ) {
+                   $fluent = $this->getDb()->select("TOP 1 $this->table.*")->from($this->table);
+                } else {
+                    $fluent = $this->createFindFluent()->limit(1);
+                }
+                    
 
 		if (is_scalar($conditions)) {
 			$fluent->where(array(
@@ -200,15 +206,10 @@ class Mapper extends \Nette\Object implements IMapper
 		}
 
 		try {
-                     
-                    if (in_array(strtolower($this->getDb()->getConfig("driver")), array("mssql","mssql2005","sqlsrv")) ) {
-                        $res = $this->getDb()->select("TOP 1 $this->table.*")->from($this->table)->execute()->setRowClass($this->rowClass)->fetch();
-                    } else {
-                        $res = $fluent->limit(1)->execute()->setRowClass($this->rowClass)->fetch();
-                    }
-			
+                    $res = $fluent->execute()->setRowClass($this->rowClass)->fetch();
+                    
 		} catch (\Exception $e) {
-			throw new \ModelException("Find query failed. " . $e->getMessage(), $e->getCode(), $e);
+                    throw new \ModelException("Find query failed. " . $e->getMessage(), $e->getCode(), $e);
 		}
 
 		if ($res) {
