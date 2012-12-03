@@ -49,10 +49,11 @@ class Storage extends \Nette\FreezableObject implements \ArrayAccess, \IteratorA
 	{
 		$this->init();
 
-		$this->values = new ArrayObject(array());
+		$this->values = new ArrayObject( $this->getDefaultValues() );
+                
 
 		if ($data !== null) {
-			$this->setValues($data);
+			$this->setValues( (array) $data );
 		}
 	}
 

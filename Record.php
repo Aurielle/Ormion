@@ -66,7 +66,7 @@ abstract class Record extends Storage implements IRecord
 			parent::__construct();
 			$this->{$this->getConfig()->getPrimaryColumn()} = $data;
 		} else {
-			parent::__construct(array_merge($this->getDefaultValues(), (array) $data));
+		    parent::__construct((array) $data );
 		}
 	}
 
