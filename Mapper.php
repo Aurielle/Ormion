@@ -166,9 +166,8 @@ class Mapper extends \Nette\Object implements IMapper
 		return $this->getDb()->select("$this->table.*")->from($this->table);
 	}
 
-
-
-	/**
+       
+        /**
 	 * Find all results
 	 * @param array conditions
 	 * @return Collection
@@ -201,7 +200,13 @@ class Mapper extends \Nette\Object implements IMapper
 		}
 
 		try {
-			$res = $fluent->limit(1)->execute()->setRowClass($this->rowClass)->fetch();
+                     
+                    if (in_array(strtolower($this->getDb()->getConfig("driver")), array("mssql","mssql2005","sqlsrv")) ) {
+                        $res = $this->getDb()->select("TOP 1 $this->table.*")->from($this->table)->execute()->setRowClass($this->rowClass)->fetch();
+                    } else {
+                        $res = $fluent->limit(1)->execute()->setRowClass($this->rowClass)->fetch();
+                    }
+			
 		} catch (\Exception $e) {
 			throw new \ModelException("Find query failed. " . $e->getMessage(), $e->getCode(), $e);
 		}
