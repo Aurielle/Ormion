@@ -66,7 +66,7 @@ abstract class Record extends Storage implements IRecord
 			parent::__construct();
 			$this->{$this->getConfig()->getPrimaryColumn()} = $data;
 		} else {
-		    parent::__construct((array) $data );
+		    parent::__construct( $data );
 		}
 	}
 
@@ -423,7 +423,10 @@ abstract class Record extends Storage implements IRecord
 	 */
 	public function getValues($columns = null)
 	{
-		$this->lazyLoadValues($columns);
+            
+                if ( $this->getState()!=self::STATE_NEW ) {
+		    $this->lazyLoadValues($columns);
+                }	
 		return parent::getValues($columns);
 	}
 
