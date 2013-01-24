@@ -343,7 +343,7 @@ class Storage extends \Nette\FreezableObject implements \ArrayAccess, \IteratorA
 		}
 
 		if (isset($this->setters[$name])) {
-			call_user_func($this->setters[$name], $this, $name, $value);
+			call_user_func($this->setters[$name], $this, $value);
 		} else {
 			$this->values[$name] = $value;
 		}
