@@ -379,7 +379,13 @@ abstract class Record extends Storage implements IRecord
 		}
 	}
 
-
+        /**
+         * is record new
+         * @return bool return TRUE if record doesn't exists in database
+         */
+        public function isNew(){
+            return $this->getState() == IRecord::STATE_NEW;
+        }
 
 	/**
 	 * Set state
