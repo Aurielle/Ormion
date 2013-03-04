@@ -212,18 +212,24 @@ class Collection extends BaseCollection implements \IDataSource
 	 * @param string associative descriptor
 	 * @return array
 	 */
-	public function fetchAssoc($assoc)
+		public function fetchAssoc($assoc = "id")
 	{
 		$arr = $this->runQuery($this->fluent)
 			->setRowClass($this->getItemType())
-			->fetchAssoc($assoc);
+			->fetchAll();
+                
+                $assocA = array();
+                foreach($arr as $row) {
+                    $assocA[$row->{$assoc}] = $row;
+                }
 
-		array_walk_recursive($arr, function ($item) {
+		array_walk_recursive($assocA, function ($item) {
 			$item->setState(IRecord::STATE_EXISTING)->clearModified();
 		});
 
-		return $arr;
+		return $assocA;
 	}
+
 
 
 
