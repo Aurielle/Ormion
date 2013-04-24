@@ -272,7 +272,12 @@ class Mapper extends \Nette\Object implements IMapper
 
 			foreach ($config->getColumns() as $column) {
 				if ($record->hasValue($column)) {
-					$values[$column . "%" . $config->getType($column)] = $record->$column;
+					//BIGINT must be treated because of dibi bug as string
+					if($config->getType($column) == 'i' &&  abs($record->$column) > 2147483647){
+						$values[$column . "%s"] = $record->$column;
+					} else {
+						$values[$column . "%" . $config->getType($column)] = $record->$column;
+					}
 				}
 			}
 
@@ -316,8 +321,14 @@ class Mapper extends \Nette\Object implements IMapper
 
                         $primaryKeys = $config->getPrimaryColumns();
 			foreach ($columns as $column) {
-                                if ( !in_array($column,$primaryKeys)) 
-				$values[$column . "%" . $config->getType($column)] = $record->$column;
+                                if ( !in_array($column,$primaryKeys)) {
+					//BIGINT must be treated because of dibi bug as string
+					if($config->getType($column) == 'i' &&  abs($record->$column) > 2147483647){
+						$values[$column . "%s"] = $record->$column;
+					} else {
+						$values[$column . "%" . $config->getType($column)] = $record->$column;
+					}
+                                }
 			}
 			if (isset($values)) {
 				$this->getDb()
