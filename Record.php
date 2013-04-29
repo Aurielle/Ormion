@@ -456,7 +456,7 @@ abstract class Record extends Storage implements IRecord
 				return (string) $value;
 
 			case dibi::INTEGER:
-				return (int) $value;
+				return is_null($value)||$value==''  ? $value : 0+$value;
 
 			case dibi::FLOAT:
 				return (float) $value;
