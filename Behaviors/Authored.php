@@ -72,7 +72,8 @@ class Authored extends Object implements IBehavior
 
 	public function updateCreated(IRecord $record)
 	{
-		$record->{$this->created} = date(self::MYSQL_DATETIME_FORMAT);
+		if ( empty($record->{$this->created}) )
+			$record->{$this->created} = date(self::MYSQL_DATETIME_FORMAT);
 	}
 
 
@@ -84,7 +85,8 @@ class Authored extends Object implements IBehavior
 
         public function updateCreatedBy(IRecord $record)
 	{
-		$record->{$this->createdBy} = user()->getId();
+		if ( empty($record->{$this->createdBy}) )
+			$record->{$this->createdBy} = user()->getId();
 	}
 
 
