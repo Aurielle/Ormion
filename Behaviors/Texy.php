@@ -2,7 +2,7 @@
 
 namespace Ormion\Behavior;
 
-use Nette\Environment;
+use \Nette\Environment;
 use Ormion\IRecord;
 
 /**

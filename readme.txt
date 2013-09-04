@@ -10,3 +10,6 @@ Jednoduché active record ORM pro Nette a dibi
 -----------------
 
 Větev aktualizovaná (zatím pouze bugfixy)
+
+------------------
+větev upravená pro podporu MSSQL2005 Driveru

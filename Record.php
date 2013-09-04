@@ -66,7 +66,7 @@ abstract class Record extends Storage implements IRecord
 			parent::__construct();
 			$this->{$this->getConfig()->getPrimaryColumn()} = $data;
 		} else {
-			parent::__construct(array_merge($this->getDefaultValues(), (array) $data));
+		    parent::__construct( $data );
 		}
 	}
 
@@ -379,7 +379,13 @@ abstract class Record extends Storage implements IRecord
 		}
 	}
 
-
+        /**
+         * is record new
+         * @return bool return TRUE if record doesn't exists in database
+         */
+        public function isNew(){
+            return $this->getState() == IRecord::STATE_NEW;
+        }
 
 	/**
 	 * Set state
@@ -423,7 +429,10 @@ abstract class Record extends Storage implements IRecord
 	 */
 	public function getValues($columns = null)
 	{
-		$this->lazyLoadValues($columns);
+            
+                if ( $this->getState()!=self::STATE_NEW ) {
+		    $this->lazyLoadValues($columns);
+                }	
 		return parent::getValues($columns);
 	}
 
@@ -447,7 +456,7 @@ abstract class Record extends Storage implements IRecord
 				return (string) $value;
 
 			case dibi::INTEGER:
-				return (int) $value;
+				return is_null($value)||$value==''  ? $value : 0+$value;
 
 			case dibi::FLOAT:
 				return (float) $value;

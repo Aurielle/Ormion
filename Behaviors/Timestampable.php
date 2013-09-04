@@ -2,7 +2,7 @@
 
 namespace Ormion\Behavior;
 
-use Nette\Object;
+use \Nette\Object;
 use Ormion\IRecord;
 
 /**
@@ -45,6 +45,7 @@ class Timestampable extends Object implements IBehavior
 		}
 
 		if (isset($this->updated)) {
+                        $record->onBeforeInsert[] = array($this, "updateUpdated");
 			$record->onBeforeUpdate[] = array($this, "updateUpdated");
 		}
 	}

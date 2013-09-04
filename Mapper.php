@@ -166,9 +166,8 @@ class Mapper extends \Nette\Object implements IMapper
 		return $this->getDb()->select("$this->table.*")->from($this->table);
 	}
 
-
-
-	/**
+       
+        /**
 	 * Find all results
 	 * @param array conditions
 	 * @return Collection
@@ -190,7 +189,13 @@ class Mapper extends \Nette\Object implements IMapper
 	 */
 	public function find($conditions = null)
 	{
-		$fluent = $this->createFindFluent();
+		
+                if (in_array(strtolower($this->getDb()->getConfig("driver")), array("mssql","mssql2005","sqlsrv")) ) {
+                   $fluent = $this->getDb()->select("TOP 1 $this->table.*")->from($this->table);
+                } else {
+                    $fluent = $this->createFindFluent()->limit(1);
+                }
+                    
 
 		if (is_scalar($conditions)) {
 			$fluent->where(array(
@@ -201,9 +206,10 @@ class Mapper extends \Nette\Object implements IMapper
 		}
 
 		try {
-			$res = $fluent->limit(1)->execute()->setRowClass($this->rowClass)->fetch();
+                    $res = $fluent->execute()->setRowClass($this->rowClass)->fetch();
+                    
 		} catch (\Exception $e) {
-			throw new \ModelException("Find query failed. " . $e->getMessage(), $e->getCode(), $e);
+                    throw new \ModelException("Find query failed. " . $e->getMessage(), $e->getCode(), $e);
 		}
 
 		if ($res) {
@@ -266,7 +272,12 @@ class Mapper extends \Nette\Object implements IMapper
 
 			foreach ($config->getColumns() as $column) {
 				if ($record->hasValue($column)) {
-					$values[$column . "%" . $config->getType($column)] = $record->$column;
+					//BIGINT must be treated because of dibi bug as string
+					if($config->getType($column) == 'i' &&  abs($record->$column) > 2147483647){
+						$values[$column . "%s"] = $record->$column;
+					} else {
+						$values[$column . "%" . $config->getType($column)] = $record->$column;
+					}
 				}
 			}
 
@@ -308,14 +319,21 @@ class Mapper extends \Nette\Object implements IMapper
 			$config = $this->getConfig();
 			$columns = array_intersect($config->getColumns(), $record->getModified());
 
+                        $primaryKeys = $config->getPrimaryColumns();
 			foreach ($columns as $column) {
-				$values[$column . "%" . $config->getType($column)] = $record->$column;
+                                if ( !in_array($column,$primaryKeys)) {
+					//BIGINT must be treated because of dibi bug as string
+					if($config->getType($column) == 'i' &&  abs($record->$column) > 2147483647){
+						$values[$column . "%s"] = $record->$column;
+					} else {
+						$values[$column . "%" . $config->getType($column)] = $record->$column;
+					}
+                                }
 			}
-
 			if (isset($values)) {
 				$this->getDb()
 					->update($this->table, $values)
-					->where($record->getValues($config->getPrimaryColumns()))
+					->where($record->getValues($primaryKeys))
 					->execute();
 
 				$record->clearModified();
